@@ -144,6 +144,10 @@ call(_, _, _, _, _, _, _, _, _).
 %  * `unknown`: How undefined predicates are handled when called. Possible values are `error` (the default, an error is thrown),
 %    `fail` (the call silently fails) and `warn` (the call fails and a warning about the undefined predicate is printed).
 %  * `answer_write_options`: Additional write options used by the top level for writing answers.
+%  * `colon_sets_calling_context`: If true, the calling context can be set with the infix operator `:`. Also, `:` as a
+%    meta-argument in a metapredicate declaration means the procedure expects the argument to be module-qualified.
+%    If passed a term that is *not* module-qualified, the 
+%    activating the goal with an unqualified atom, module-qualified term `(M:P)` instead of the . On Scryer, this is always `true`.
 %
 current_prolog_flag(Flag, Value) :- Flag == max_arity, !, Value = 1023.
 current_prolog_flag(max_arity, 1023).
@@ -169,6 +173,8 @@ current_prolog_flag(Flag, Value) :-
     answer_write_options(Value).
 current_prolog_flag(answer_write_options, Value) :-
     answer_write_options(Value).
+current_prolog_flag(Flag, Value) :- Flag == colon_sets_calling_context, !, Value == true.
+current_prolog_flag(colon_sets_calling_context, true).
 current_prolog_flag(Flag, _) :-
     atom(Flag),
     throw(error(domain_error(prolog_flag, Flag), current_prolog_flag/2)). % 8.17.2.3 b
