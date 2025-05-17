@@ -1144,29 +1144,12 @@ setof(Template, Goal, Solution) :-
     ;  throw(error(type_error(callable, H), clause/2))
     ).
 
-%% clause(Head, Body).
+:- meta_predicate(clause(:, ?)).
+
+%% clause(+Head, ?Body).
 %
 % True iff Head can be unified with a clause head and Body with its corresponding clause body.
-clause(H, B) :-
-    (  var(H) ->
-       throw(error(instantiation_error, clause/2))
-    ;  callable(H), functor(H, Name, Arity) ->
-       (  Name == (:),
-          Arity =:= 2 ->
-          arg(1, H, Module),
-          arg(2, H, F),
-          '$module_clause'(F, B, Module)
-       ;  '$no_such_predicate'(user, H) ->
-          '$fail'
-       ;  '$head_is_dynamic'(user, H) ->
-          '$clause_body_is_valid'(B),
-          '$clause'(H, B)
-       ;  throw(error(permission_error(access, private_procedure, Name/Arity),
-                      clause/2))
-       )
-    ;  throw(error(type_error(callable, H), clause/2))
-    ).
-
+clause(Module:H, B) :- '$module_clause'(H, B, Module).
 
 :- meta_predicate asserta(:).
 
