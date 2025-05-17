@@ -1129,7 +1129,12 @@ setof(Template, Goal, Solution) :-
     ;  throw(error(type_error(callable, B), clause/2))
     ).
 
-'$module_clause'(H, B, Module) :-
+:- meta_predicate(clause(:, ?)).
+
+%% clause(+Head, ?Body).
+%
+% True iff Head can be unified with a clause head and Body with its corresponding clause body.
+clause(Module:H, B) :-
     (  var(H) ->
        throw(error(instantiation_error, clause/2))
     ;  callable(H), functor(H, Name, Arity) ->
@@ -1143,13 +1148,6 @@ setof(Template, Goal, Solution) :-
        )
     ;  throw(error(type_error(callable, H), clause/2))
     ).
-
-:- meta_predicate(clause(:, ?)).
-
-%% clause(+Head, ?Body).
-%
-% True iff Head can be unified with a clause head and Body with its corresponding clause body.
-clause(Module:H, B) :- '$module_clause'(H, B, Module).
 
 :- meta_predicate asserta(:).
 
